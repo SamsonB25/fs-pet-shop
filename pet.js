@@ -105,6 +105,6 @@ if (subcommand === "read") {
     });
   });
 } else {
-  console.error("Usage: node pets.js [read | create | update | destroy]");
+  console.error("Usage: node pet.js [read | create | update | destroy]");
   process.exit(1);
 }
