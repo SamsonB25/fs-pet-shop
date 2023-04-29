@@ -4,6 +4,7 @@ import fs from "node:fs";
 const app = express();
 const port = 3000;
 app.use(express.json());
+
 // handle request
 app.get("/pet", (request, response) => {
   fs.readFile("pets.json", "utf8", (err, string) => {
@@ -15,15 +16,16 @@ app.get("/pet", (request, response) => {
 app.get("/pet/:index", (request, response) => {
   fs.readFile("pets.json", "utf8", (err, string) => {
     const petIndex = Number(request.params.index);
-    console.log(petIndex);
     const pets = JSON.parse(string);
     const pet = pets[petIndex];
+    console.log(petIndex);
     //error handling
-    if (petIndex > pets.length || petIndex < 0 || Number.isNaN(petIndex)) {
+    if (pets[petIndex] === undefined) {
       response
         .status(404)
-        .response.setHeader("Content-Type", `text/plain`)
-        .response.end("Not Found");
+        .setHeader("Content-Type", `text/plain`)
+        .end("Not Found");
+
       return;
     }
     response.end(JSON.stringify(pet));
@@ -38,10 +40,10 @@ app.post("/pet", (request, response) => {
     typeof addPet.age !== "number" ||
     addPet.kind === undefined
   ) {
-    response.statusCode = 400;
     response
+      .status(400)
       .setHeader("Content-Type", `text/plain`)
-      .response.end("Bad Request");
+      .end("Bad Request");
     return;
   }
   fs.readFile("pets.json", "utf8", (error, string) => {
@@ -50,7 +52,7 @@ app.post("/pet", (request, response) => {
     fs.writeFile("pets.json", JSON.stringify(pets), (err) => {
       response
         .setHeader("Content-Type", "application/json")
-        .response.send(addPet);
+        .end(JSON.stringify(addPet));
     });
   });
 });
@@ -62,11 +64,11 @@ app.delete("/pet/:index", (request, response) => {
     const pets = JSON.parse(string);
     const pet = pets[petIndex];
     //error handling
-    if (petIndex > pets.length || petIndex < 0 || Number.isNaN(petIndex)) {
+    if (petIndex >= pets.length || petIndex < 0 || Number.isNaN(petIndex)) {
       response
         .status(404)
-        .response.setHeader("Content-Type", `text/plain`)
-        .response.end("Not Found");
+        .setHeader("Content-Type", `text/plain`)
+        .end("Not Found");
       return;
     }
     pets.splice(petIndex, 1);
@@ -87,6 +89,6 @@ app.delete("/pet/:index", (request, response) => {
 });
 
 // listen on port
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log(`Listening On Port ${port}`);
 });
