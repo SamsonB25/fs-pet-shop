@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS pets;
 
 CREATE TABLE pets(
-    id SERIAL,
-    name CHAR(25),
-    kind CHAR(25),
-    age SMALLINT
+    id SERIAL PRIMARY KEY,
+    name CHAR(25) NOT NULL,
+    kind CHAR(25) NOT NULL,
+    age SMALLINT 
 );
