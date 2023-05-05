@@ -2,18 +2,18 @@ import express, { response } from "express";
 import { log } from "node:console";
 import fs from "node:fs";
 const app = express();
-const port = 3000;
+const port = 3001;
 app.use(express.json());
 
 // handle request
-app.get("/pet", (request, response) => {
+const getPets = app.get("/pet", (request, response) => {
   fs.readFile("pets.json", "utf8", (err, string) => {
     // error handling
     response.end(string);
   });
 });
 
-app.get("/pet/:index", (request, response) => {
+export const getPet = app.get("/pet/:index", (request, response) => {
   fs.readFile("pets.json", "utf8", (err, string) => {
     const petIndex = Number(request.params.index);
     const pets = JSON.parse(string);
@@ -32,7 +32,7 @@ app.get("/pet/:index", (request, response) => {
   });
 });
 
-app.post("/pet", (request, response) => {
+export const createPet = app.post("/pet", (request, response) => {
   const addPet = request.body;
   console.log(typeof addPet.age !== "number");
   if (
@@ -57,7 +57,7 @@ app.post("/pet", (request, response) => {
   });
 });
 
-app.delete("/pet/:index", (request, response) => {
+export const deletePet = app.delete("/pet/:index", (request, response) => {
   const petIndex = Number(request.params.index);
   fs.readFile("pets.json", "utf8", (err, string) => {
     console.log(petIndex);
@@ -89,6 +89,6 @@ app.delete("/pet/:index", (request, response) => {
 });
 
 // listen on port
-app.listen(port, () => {
-  console.log(`Listening On Port ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Listening On Port ${port}`);
+// });
